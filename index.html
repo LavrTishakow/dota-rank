@@ -13,7 +13,7 @@
     margin: 0;
     height: 100vh;
   }
-  #rank-img {
+  canvas {
     width: 128px;
     height: 128px;
   }
@@ -21,35 +21,69 @@
 <link rel="icon" href="data:,">
 </head>
 <body>
-<img id="rank-img" alt="Ранг">
+<canvas id="rank-canvas" width="256" height="256"></canvas>
 <script>
 const STEAM_ID = '109727253';   // твой Steam ID
 const API_URL = `https://api.opendota.com/api/players/${STEAM_ID}`;
-// Иконки со звёздами лежат на CDN Stratz
-const ICON_BASE = 'https://stratz.com/assets/images/dota2/rank_icons/rank_';
+
+// Базовые URL иконок из репозитория Dotabuff (постоянные)
+const MEDAL_BASE = 'https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/rank{0}_psd.png';
+const PIP_BASE   = 'https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/pip{0}_psd.png';
 
 async function updateRank() {
-  const img = document.getElementById('rank-img');
+  const canvas = document.getElementById('rank-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 256, 256);
+
   try {
+    // 1. Получаем rank_tier
     const response = await fetch(API_URL);
     const data = await response.json();
     const tier = data.rank_tier;
     console.log('rank_tier:', tier);
-    if (tier && tier > 0) {
-      img.src = `${ICON_BASE}${tier}.png?t=${Date.now()}`;
-      console.log('Иконка:', img.src);
-    } else {
-      img.src = '';
-      console.warn('Ранг не откалиброван');
+
+    if (!tier || tier < 10) {
+      // Нет калибровки – оставляем пустой холст
+      return;
     }
-  } catch(e) {
-    console.error('Ошибка API:', e);
-    img.src = '';
+
+    const medal = Math.floor(tier / 10);   // 1=Herald, 2=Guardian, 3=Crusader, ...
+    const stars = tier % 10;               // 0-5 звёзд
+
+    // 2. Загружаем медаль
+    const medalUrl = MEDAL_BASE.replace('{0}', medal);
+    const medalImg = await loadImage(medalUrl);
+
+    // 3. Рисуем медаль
+    ctx.drawImage(medalImg, 0, 0, 256, 256);
+
+    // 4. Если есть звёзды (stars > 0) – загружаем и накладываем
+    if (stars > 0) {
+      const pipUrl = PIP_BASE.replace('{0}', stars);
+      const pipImg = await loadImage(pipUrl);
+      ctx.drawImage(pipImg, 0, 0, 256, 256);
+    }
+
+    console.log('Иконка собрана: medal', medal, 'stars', stars);
+  } catch (e) {
+    console.error('Ошибка:', e);
   }
 }
 
+// Вспомогательная функция загрузки изображения
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Не удалось загрузить ${url}`));
+    img.src = url + '?t=' + Date.now();
+  });
+}
+
+// Запуск и автообновление
 updateRank();
-setInterval(updateRank, 120000); // обновление каждые 2 минуты
+setInterval(updateRank, 120000);
 </script>
 </body>
 </html>
