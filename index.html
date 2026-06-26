@@ -22,13 +22,25 @@
 </head>
 <body>
 <canvas id="rank-canvas" width="256" height="256"></canvas>
+
+<!-- Легковесная реализация MD5 (нужна для генерации ссылок Dotabuff) -->
+<script>
+// Вставка мини-библиотеки MD5 (spark-md5) — общедоступная, не требует скачивания
+// Источник: https://github.com/satazor/js-spark-md5
+!function(e){"use strict";function t(e,t){var n=(65535&e)+(65535&t);return(e>>16)+(t>>16)+(n>>16)<<16|65535&n}function n(e,t){return e<<t|e>>>32-t}function r(e,r,o,i,u,a){return t(n(t(t(r,e),t(i,a)),u),o)}function o(e,t,n,o,i,u,a){return r(t&n|~t&o,e,t,i,u,a)}function i(e,t,n,o,i,u,a){return r(t&o|n&~o,e,t,i,u,a)}function u(e,t,n,o,i,u,a){return r(t^n^o,e,t,i,u,a)}function a(e,t,n,o,i,u,a){return r(n^(t|~o),e,t,i,u,a)}function c(e,n){e[n>>5]|=128<<n%32,e[14+(n+64>>>9<<4)]=n;var r,c,f,s,l,d=1732584193,h=-271733879,p=-1732584194,m=271733878;for(r=0;r<e.length;r+=16)c=d,f=h,s=p,l=m,d=o(d,h,p,m,e[r],7,-680876936),m=o(m,d,h,p,e[r+1],12,-389564586),p=o(p,m,d,h,e[r+2],17,606105819),h=o(h,p,m,d,e[r+3],22,-1044525330),d=o(d,h,p,m,e[r+4],7,-176418897),m=o(m,d,h,p,e[r+5],12,1200080426),p=o(p,m,d,h,e[r+6],17,-1473231341),h=o(h,p,m,d,e[r+7],22,-45705983),d=o(d,h,p,m,e[r+8],7,1770035416),m=o(m,d,h,p,e[r+9],12,-1958414417),p=o(p,m,d,h,e[r+10],17,-42063),h=o(h,p,m,d,e[r+11],22,-1990404162),d=o(d,h,p,m,e[r+12],7,1804603682),m=o(m,d,h,p,e[r+13],12,-40341101),p=o(p,m,d,h,e[r+14],17,-1502002290),d=i(d,h=o(h,p,m,d,e[r+15],22,1236535329),p,m,e[r+1],5,-165796510),m=i(m,d,h,p,e[r+6],9,-1069501632),p=i(p,m,d,h,e[r+11],14,643717713),h=i(h,p,m,d,e[r],20,-373897302),d=i(d,h,p,m,e[r+5],5,-701558691),m=i(m,d,h,p,e[r+10],9,38016083),p=i(p,m,d,h,e[r+15],14,-660478335),h=i(h,p,m,d,e[r+4],20,-405537848),d=i(d,h,p,m,e[r+9],5,568446438),m=i(m,d,h,p,e[r+14],9,-1019803690),p=i(p,m,d,h,e[r+3],14,-187363961),h=i(h,p,m,d,e[r+8],20,1163531501),d=i(d,h,p,m,e[r+13],5,-1444681467),m=i(m,d,h,p,e[r+2],9,-51403784),p=i(p,m,d,h,e[r+7],14,1735328473),d=u(d,h=i(h,p,m,d,e[r+12],20,-1926607734),p,m,e[r+5],4,-378558),m=u(m,d,h,p,e[r+8],11,-2022574463),p=u(p,m,d,h,e[r+11],16,1839030562),h=u(h,p,m,d,e[r+14],23,-35309556),d=u(d,h,p,m,e[r+1],4,-1530992060),m=u(m,d,h,p,e[r+4],11,1272893353),p=u(p,m,d,h,e[r+7],16,-155497632),h=u(h,p,m,d,e[r+10],23,-1094730640),d=u(d,h,p,m,e[r+13],4,681279174),m=u(m,d,h,p,e[r],11,-358537222),p=u(p,m,d,h,e[r+3],16,-722521979),h=u(h,p,m,d,e[r+6],23,76029189),d=u(d,h,p,m,e[r+9],4,-640364487),m=u(m,d,h,p,e[r+12],11,-421815835),p=u(p,m,d,h,e[r+15],16,530742520),d=a(d,h=u(h,p,m,d,e[r+2],23,-995338651),p,m,e[r],6,-198630844),m=a(m,d,h,p,e[r+7],10,1126891415),p=a(p,m,d,h,e[r+14],15,-1416354905),h=a(h,p,m,d,e[r+5],21,-57434055),d=a(d,h,p,m,e[r+12],6,1700485571),m=a(m,d,h,p,e[r+3],10,-1894986606),p=a(p,m,d,h,e[r+2],15,-1051523),h=a(h,p,m,d,e[r+9],21,-2054922799),d=a(d,h,p,m,e[r+15],6,1873313359),m=a(m,d,h,p,e[r+10],10,-30611744),p=a(p,m,d,h,e[r+1],15,-1560198380),h=a(h,p,m,d,e[r+8],21,1309151649),d=a(d,h,p,m,e[r+7],6,-145523070),m=a(m,d,h,p,e[r+14],10,-1120210379),p=a(p,m,d,h,e[r+5],15,718787259),h=a(h,p,m,d,e[r+12],21,-343485551),d=t(d,c),h=t(h,f),p=t(p,s),m=t(m,l);return[d,h,p,m].map(function(e){return("00000000"+e.toString(16)).slice(-8)}).join("")}function s(e){return c(function(e){for(var t=[],n=0;n<e.length*8;n+=8)t[n>>5]|=(255&e.charCodeAt(n/8))<<n%32;return t}(e),e.length*8)}"undefined"!=typeof module&&module.exports&&(module.exports=s),window.md5=s}();
+</script>
+
 <script>
 const STEAM_ID = '109727253';   // твой Steam ID
 const API_URL = `https://api.opendota.com/api/players/${STEAM_ID}`;
 
-// Базовые URL иконок из репозитория Dotabuff (постоянные)
-const MEDAL_BASE = 'https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/rank{0}_psd.png';
-const PIP_BASE   = 'https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/pip{0}_psd.png';
+// Функция генерации URL для Dotabuff CDN
+function getDotabuffIconUrl(originalUrl) {
+  const hexUrl = Array.from(new TextEncoder().encode(originalUrl))
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+  const hash = window.md5(originalUrl);
+  return `https://riki.dotabuff.com/c/${hash}/${hexUrl}`;
+}
 
 async function updateRank() {
   const canvas = document.getElementById('rank-canvas');
@@ -36,52 +48,47 @@ async function updateRank() {
   ctx.clearRect(0, 0, 256, 256);
 
   try {
-    // 1. Получаем rank_tier
-    const response = await fetch(API_URL);
-    const data = await response.json();
+    const resp = await fetch(API_URL);
+    const data = await resp.json();
     const tier = data.rank_tier;
     console.log('rank_tier:', tier);
+    if (!tier || tier < 10) return;
 
-    if (!tier || tier < 10) {
-      // Нет калибровки – оставляем пустой холст
-      return;
-    }
+    const medal = Math.floor(tier / 10);   // 1=Herald, 3=Crusader, ...
+    const stars = tier % 10;
 
-    const medal = Math.floor(tier / 10);   // 1=Herald, 2=Guardian, 3=Crusader, ...
-    const stars = tier % 10;               // 0-5 звёзд
+    // Исходные URL (которые у Dotabuff хранятся в кеше)
+    const medalRaw = `https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/rank${medal}_psd.png`;
+    const pipRaw   = `https://raw.githubusercontent.com/dotabuff/panorama/master/panorama/images/rank_tier_icons/pip${stars}_psd.png`;
 
-    // 2. Загружаем медаль
-    const medalUrl = MEDAL_BASE.replace('{0}', medal);
+    const medalUrl = getDotabuffIconUrl(medalRaw);
+    // Загружаем медаль
     const medalImg = await loadImage(medalUrl);
-
-    // 3. Рисуем медаль
     ctx.drawImage(medalImg, 0, 0, 256, 256);
 
-    // 4. Если есть звёзды (stars > 0) – загружаем и накладываем
     if (stars > 0) {
-      const pipUrl = PIP_BASE.replace('{0}', stars);
+      const pipUrl = getDotabuffIconUrl(pipRaw);
       const pipImg = await loadImage(pipUrl);
       ctx.drawImage(pipImg, 0, 0, 256, 256);
     }
 
-    console.log('Иконка собрана: medal', medal, 'stars', stars);
+    console.log('Собрано: medal', medal, 'stars', stars);
   } catch (e) {
     console.error('Ошибка:', e);
   }
 }
 
-// Вспомогательная функция загрузки изображения
 function loadImage(url) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(`Не удалось загрузить ${url}`));
-    img.src = url + '?t=' + Date.now();
+    img.onerror = () => reject(new Error(`Не загрузилось: ${url}`));
+    img.src = url;
   });
 }
 
-// Запуск и автообновление
+// Первый запуск и автообновление
 updateRank();
 setInterval(updateRank, 120000);
 </script>
