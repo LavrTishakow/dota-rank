@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой ранг Dota 2</title>
 <style>
   body {
     background: transparent;
@@ -16,13 +18,15 @@
     height: 128px;
   }
 </style>
+<link rel="icon" href="data:,">
 </head>
 <body>
 <img id="rank-img" alt="Ранг">
 <script>
-const STEAM_ID = '109727253';   // ← ПОМЕНЯЙ НА СВОЙ
+const STEAM_ID = '109727253';   // твой Steam ID
 const API_URL = `https://api.opendota.com/api/players/${STEAM_ID}`;
-const ICON_BASE = 'https://raw.githubusercontent.com/odota/dotaconstants/master/build/rank_icons/rank_icon_';
+// Иконки со звёздами лежат на CDN Stratz
+const ICON_BASE = 'https://stratz.com/assets/images/dota2/rank_icons/rank_';
 
 async function updateRank() {
   const img = document.getElementById('rank-img');
@@ -30,13 +34,16 @@ async function updateRank() {
     const response = await fetch(API_URL);
     const data = await response.json();
     const tier = data.rank_tier;
+    console.log('rank_tier:', tier);
     if (tier && tier > 0) {
-      img.src = `${ICON_BASE}${tier}.png`;
+      img.src = `${ICON_BASE}${tier}.png?t=${Date.now()}`;
+      console.log('Иконка:', img.src);
     } else {
-      img.src = '';  // нет ранга — иконка пропадёт
+      img.src = '';
+      console.warn('Ранг не откалиброван');
     }
   } catch(e) {
-    console.error('Ошибка загрузки ранга:', e);
+    console.error('Ошибка API:', e);
     img.src = '';
   }
 }
